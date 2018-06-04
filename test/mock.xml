@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config>
+  <some>
+    <secured password="foo de bar">
+      <node port="43"/>
+      <node port="42"/>
+      <something>here</something>
+      <node port="41"/>
+      <node port="40"/>
+    </secured>
+  </some>
+  <end/>
+</config>
