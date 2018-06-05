@@ -19,7 +19,6 @@ class Config {
 
 
   get(obj, prop) {
-
     if(prop == Symbol.iterator) {
       //then we must have siblings
       var self = this;
@@ -54,7 +53,8 @@ class Config {
       }
     }
 
-    return new Config({name : prop});
+    return null;
+    //return new Config({name : prop});
   }
 
   load_xml(body) {

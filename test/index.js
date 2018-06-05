@@ -2,6 +2,7 @@
 
 const path = require('path');
 const expect = require('expect.js');
+const get = require('mout/object/get');
 const Simplexml = require('../');
 
 describe("Minimal mock suite", function() {
@@ -11,7 +12,7 @@ describe("Minimal mock suite", function() {
 
 
   it("should create nodes", function() {
-    expect(config.end.and.after).to.be.ok();
+    expect(get(config, 'end.and.after')).not.to.be.ok();
   });
 
 
@@ -31,7 +32,12 @@ describe("Minimal mock suite", function() {
 
   it("should serialize ", function() {
     expect(String(config.some.secured.node)).to.eql(`<node port="43"/>`);
-    expect(String(config.end.and)).to.eql(`<and/>`);
+  });
+
+
+
+  it("should check cast as bool", function() {
+    expect(Boolean(config.end.and)).to.eql(false);
   });
 
 
