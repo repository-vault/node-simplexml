@@ -8,6 +8,8 @@
       <node port="41"/>
       <node port="40"/>
     </secured>
+
+    <sub up="master" file="config.xml sub"/>
   </some>
   <end/>
 </config>

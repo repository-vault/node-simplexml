@@ -11,14 +11,30 @@ const SYMB_BODY   = Symbol("body");
 class Config {
 
   constructor(config, parent) {
+
+    var subfile = config.attributes && config.attributes["file"];
+    if(subfile) {
+      let [subpath, node] = subfile.split(" ", 2);
+      var sub = Config.load_file(subpath);
+      if(node)
+        sub = sub[node];
+      sub[SYMB_BODY].attributes = Object.assign({}, config.attributes, sub[SYMB_BODY].attributes);
+      delete sub[SYMB_BODY].attributes["file"];
+      return sub;
+    }
+
     var ret = new Proxy(this, this);
-    this.load_xml(config);
+
+    this[SYMB_BODY]   = config;
     this[SYMB_PARENT] = parent;
     return ret;
   }
 
 
   get(obj, prop) {
+    if(prop == SYMB_BODY)
+      return this[SYMB_BODY];
+
     if(prop == Symbol.iterator) {
       //then we must have siblings
       var self = this;
@@ -40,9 +56,12 @@ class Config {
       return () => `<${this[SYMB_BODY].name}${args.length ? ' ' : ''}${args.join(' ')}/>`;
     }
 
+    if(this[SYMB_BODY].attributes) {
 
-    if(this[SYMB_BODY].attributes && this[SYMB_BODY].attributes[prop])
-      return this[SYMB_BODY].attributes[prop];
+      if(this[SYMB_BODY].attributes[prop])
+        return this[SYMB_BODY].attributes[prop];
+    }
+
 
     if(this[SYMB_BODY].children) {
 
@@ -57,14 +76,17 @@ class Config {
     //return new Config({name : prop});
   }
 
-  load_xml(body) {
-    this[SYMB_BODY]  = body;
-  }
 
 
   static load_file(config_path) {
+    if(Config.cache[config_path])
+      return Config.cache[config_path];
+
     var body = fs.readFileSync(config_path, 'utf-8');
-    return Config.load_string(body);
+    var bar = Config.load_string(body);
+
+    Config.cache[config_path] = bar;
+    return bar;
   }
 
   static load_string(body) {
@@ -75,5 +97,5 @@ class Config {
 }
 
 
-
+Config.cache = {};
 module.exports = Config;

@@ -1,14 +1,22 @@
 "use strict";
 
-const path = require('path');
 const expect = require('expect.js');
 const get = require('mout/object/get');
 const Simplexml = require('../');
 
 describe("Minimal mock suite", function() {
 
+  process.chdir(__dirname);
+  var config = Simplexml.load_file("mock.xml");
 
-  var config = Simplexml.load_file(path.join(__dirname, "mock.xml"));
+
+
+  it("should check subfile", function() {
+    expect(config.some.sub.list['value']).to.eql(1);
+    expect(config.some.sub['down']).to.eql("child");
+    expect(config.some.sub['up']).to.eql("master");
+  });
+
 
 
   it("should create nodes", function() {
